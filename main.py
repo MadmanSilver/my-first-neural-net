@@ -1,30 +1,18 @@
-from perceptron import Perceptron
+from perset import PerSet
 from random import uniform
-import activations
 
-while True:
-    inputs = str(input()).lower().split() # Takes input from the terminal and splits it into words
-    values = {l: uniform(0.0, 1.0) for l in 'abcdefghijklmnopqrstuvwxyz'} # Assign values to letters (will be calculated instead of random in future)
+filename = "training.txt"
+max_words = 0
+max_letters = 0
 
-    # Creates and activates first layer of perceptrons
-    lps = []
-    for i in range(len(inputs)):
-        lps.append(Perceptron(len(inputs[i]), activations.ltow))
-        lps[i].inputs = [values[j] for j in inputs[i]]
-        lps[i].activate()
+for line in open(filename, "r").read().split('\n'):
+    if len(line.split('/')[0].split()) > max_words:
+        max_words = len(line.split('/')[0].split())
+    for word in line.split('/')[0].split():
+        if len(word) > max_letters:
+            max_letters = len(word)
 
-    # Creates and activates second layer of perceptrons
-    wps = []
-    for i in range(len(inputs)):
-        wpin = [lps[i].output] # Adds current word
-        if i != 0:
-            wpin.append(lps[i - 1].output) # Adds previous word
-        if i != len(lps) - 1:
-            wpin.append(lps[i + 1].output) # Adds next word
-        wps.append(Perceptron(len(wpin), activations.wtoc))
-        wps[i].inputs = wpin
-        wps[i].activate()
+set1 = PerSet({l: uniform(0.0, 1.0) for l in "abcdefghijklmnopqrstuvwxyz"}, [[uniform(-4.0, 4.0) for l in range(max_letters)] for w in range(max_words)], [[uniform(-4.0, 4.0) for j in range(3)] for i in range(max_words)])
 
-    # Prints values for testing purposes
-    for i in range(len(inputs)):
-        print('{}: {:.2f}, {:.2f}'.format(inputs[i], lps[i].output, wps[i].output))
+set1.train(filename)
+print(set1.err)

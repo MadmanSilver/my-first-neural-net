@@ -4,11 +4,11 @@ def sig(x):
     """ Shorthand function for sigmoid math. """
     return 1 / (1 + np.exp(-x))
 
-def ltow(inputs, weights):
+def ltow(input, weights):
     """ Averages letter values to create a word value. """
     total = 0.0
-    for i in range(len(inputs)):
-        total += inputs[i] * weights[i]
+    for i in range(len(input)):
+        total += input[i] * weights[i]
     return sig(total)
 
 def wtoc(inputs, weights):
